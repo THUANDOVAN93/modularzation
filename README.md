@@ -1,0 +1,11 @@
+A. Module List
+    - Product Module
+        - Product
+        - Cart Items
+    - Order Module
+        - Order
+        - Order Line
+    - Payment Module
+        - Payment Processor
+    - Shipment Module
+        - Processes Shipments

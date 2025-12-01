@@ -41,4 +41,9 @@ class PayBuddy
     {
         return (string) Str::uuid();
     }
+
+    public static function invalidToken(): string
+    {
+        return substr(self::validToken(), -35);
+    }
 }

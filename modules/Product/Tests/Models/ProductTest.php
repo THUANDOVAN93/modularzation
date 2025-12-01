@@ -15,6 +15,6 @@ class ProductTest extends TestCase
 //        $product = new Product();
         $product = Product::factory()->create();
 
-        dd($product);
+        $this->assertTrue(true);
     }
 }

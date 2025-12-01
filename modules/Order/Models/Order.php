@@ -2,8 +2,11 @@
 
 namespace Modules\Order\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Order\Database\Factories\OrderFactory;
 
 class Order extends Model
@@ -13,6 +16,8 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'status',
+        'payment_id',
+        'payment_gateway',
         'total_in_cents',
     ];
 
@@ -20,6 +25,16 @@ class Order extends Model
         'user_id' => 'integer',
         'total_in_cents' => 'integer',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function lines(): HasMany
+    {
+        return $this->hasMany(OrderLines::class);
+    }
 
     protected static function newFactory(): OrderFactory
     {

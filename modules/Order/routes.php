@@ -1,3 +1,10 @@
 <?php
 
-Route::get('order-test', fn() => 'This is order route');
+use Modules\Order\Http\Controllers\CheckoutController;
+
+Route::middleware('auth')->group(function () {
+    Route::post('checkout', CheckoutController::class)->name('order.checkout');
+});
+
+//Route::post('checkout', CheckoutController::class)->name('order.checkout');
+

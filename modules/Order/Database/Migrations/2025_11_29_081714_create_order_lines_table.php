@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('order_lines', function (Blueprint $table) {
             $table->foreignId('order_id');
             $table->foreignId('product_id');
-            $table->unsignedInteger('product_price_in_cents');
+            $table->unsignedInteger('price_in_cents');
             $table->unsignedInteger('quantity');
             $table->timestamps();
         });

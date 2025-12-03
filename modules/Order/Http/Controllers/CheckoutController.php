@@ -3,24 +3,29 @@
 namespace Modules\Order\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use Modules\Order\Http\Requests\CheckoutRequest;
 use Modules\Order\Models\Order;
 use Modules\Payment\PayBuddy;
+use Modules\Product\CartItem;
+use Modules\Product\CartItemCollection;
 use Modules\Product\Models\Product;
+use Modules\Product\Warehouse\ProductStockManager;
 
 class CheckoutController
 {
+    public function __construct(
+        protected ProductStockManager $productStockManager,
+    )
+    {
+    }
+
     public function __invoke(CheckoutRequest $request): JsonResponse
     {
-        $products = collect($request->input('products'))->map(function (array $productDetails) {
-            return [
-                'product' => Product::find($productDetails['id']),
-                'quantity' => $productDetails['quantity'],
-            ];
-        });
+        $cartItems = CartItemCollection::fromCheckoutData($request->input('products'));
 
-        $orderTotalInCents = $products->sum(fn($productDetails) => $productDetails['quantity'] * $productDetails['product']->price_in_cents);
+        $orderTotalInCents = $cartItems->totalInCents();
 
         $payBuddy = PayBuddy::make();
 
@@ -40,17 +45,16 @@ class CheckoutController
             'user_id' => $request->user()->id,
         ]);
 
-        foreach ($products as $product) {
-            $product['product']->decrement('stock');
+        foreach ($cartItems->items() as $cartItem) {
+            $this->productStockManager->decrement($cartItem->product->id, $cartItem->quantity);
 
             $order->lines()->create([
                 'order_id' => $order->id,
-                'product_id' => $product['product']->id,
-                'quantity' => $product['quantity'],
-                'price_in_cents' => $product['product']->price_in_cents,
+                'product_id' => $cartItem->product->id,
+                'quantity' => $cartItem->quantity,
+                'price_in_cents' => $cartItem->product->priceInCents,
             ]);
         }
-
 
         return response()->json([], 201);
     }

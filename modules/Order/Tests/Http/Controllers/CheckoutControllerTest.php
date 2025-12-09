@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Modules\Order\Models\Order;
 use Modules\Order\Models\OrderLines;
 use Modules\Payment\PayBuddy;
+use Modules\Payment\Payment;
 use Modules\Product\Factories\ProductFactory;
 use Tests\TestCase;
 
@@ -47,6 +48,16 @@ class CheckoutControllerTest extends TestCase
         $this->assertEquals('paid', $order->status);
         $this->assertEquals('PayBuddy', $order->payment_gateway);
         $this->assertEquals(36, strlen($order->payment_id));
+
+        // Payment
+        /** @var Payment $payment */
+        $payment = $order->lastPayment;
+
+        $this->assertEquals('paid', $payment->status);
+        $this->assertEquals('PayBuddy', $payment->payment_gateway);
+        $this->assertEquals(36, strlen($payment->payment_id));
+        $this->assertEquals(60000, $payment->total_in_cents);
+        $this->assertTrue($payment->user->is($user));
 
         // Order Lines
         $this->assertCount(2, $order->lines);

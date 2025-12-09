@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Order\Database\Factories\OrderFactory;
+use Modules\Payment\Payment;
 
 class Order extends Model
 {
@@ -34,6 +36,16 @@ class Order extends Model
     public function lines(): HasMany
     {
         return $this->hasMany(OrderLines::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function lastPayment(): HasOne
+    {
+        return $this->hasOne(Payment::class)->latestOfMany();
     }
 
     protected static function newFactory(): OrderFactory

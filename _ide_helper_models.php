@@ -49,8 +49,11 @@ namespace Modules\Order\Models{
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Modules\Payment\Payment|null $lastPayment
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Modules\Order\Models\OrderLines> $lines
  * @property-read int|null $lines_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Modules\Payment\Payment> $payments
+ * @property-read int|null $payments_count
  * @property-read \App\Models\User|null $user
  * @method static \Modules\Order\Database\Factories\OrderFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newModelQuery()
@@ -90,7 +93,7 @@ namespace Modules\Order\Models{
 	class OrderLines extends \Eloquent {}
 }
 
-namespace Modules\Payment\Models{
+namespace Modules\Payment{
 /**
  * @property int $id
  * @property int $total_in_cents
@@ -101,6 +104,8 @@ namespace Modules\Payment\Models{
  * @property int $order_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Modules\Order\Models\Order|null $order
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment query()

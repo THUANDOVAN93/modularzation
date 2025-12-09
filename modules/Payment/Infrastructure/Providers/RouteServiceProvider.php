@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Payment\Providers;
+namespace Modules\Payment\Infrastructure\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as BaseServiceProvider;
 use Illuminate\Support\Facades\Route;

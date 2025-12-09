@@ -48,6 +48,11 @@ class Order extends Model
         return $this->hasOne(Payment::class)->latestOfMany();
     }
 
+    public function url(): string
+    {
+        return route('orders.show', $this);
+    }
+
     protected static function newFactory(): OrderFactory
     {
         return OrderFactory::new();

@@ -49,7 +49,6 @@ class CheckoutControllerTest extends TestCase
         $this->assertEquals(60000, $order->total_in_cents);
         $this->assertEquals('paid', $order->status);
         $this->assertEquals('PayBuddy', $order->payment_gateway);
-        $this->assertEquals(36, strlen($order->payment_id));
 
         // Payment
         /** @var Payment $payment */
@@ -97,7 +96,8 @@ class CheckoutControllerTest extends TestCase
                 ]
             ]);
 
-
         $response->assertStatus(422)->assertJsonValidationErrors('payment_token');
+
+        $this->assertEquals(0, Order::query()->count());
     }
 }

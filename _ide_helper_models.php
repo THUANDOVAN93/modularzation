@@ -43,7 +43,6 @@ namespace Modules\Order\Models{
 /**
  * @property int $id
  * @property int $user_id
- * @property int $payment_id
  * @property string $payment_gateway
  * @property int $total_in_cents
  * @property string $status
@@ -62,7 +61,6 @@ namespace Modules\Order\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order wherePaymentGateway($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Order wherePaymentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereTotalInCents($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUpdatedAt($value)

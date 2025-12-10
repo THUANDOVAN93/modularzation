@@ -26,32 +26,20 @@ class PurchaseItems
      */
     public function handle(CartItemCollection $items, PayBuddy $paymentProvider, string $paymentToken, int $userId): Order
     {
-        $orderTotalInCents = $items->totalInCents();
+        return $this->databaseManager->transaction(function () use ($items, $paymentProvider, $paymentToken, $userId) {
 
-        return $this->databaseManager->transaction(function () use ($items, $orderTotalInCents, $paymentProvider, $paymentToken, $userId) {
-
-            $order = Order::query()->create([
-                'status' => 'paid',
-                'payment_gateway' => 'PayBuddy',
-                'total_in_cents' => $orderTotalInCents,
-                'user_id' => $userId,
-            ]);
+            $order = Order::startForUser($userId);
+            $order->addLinesFromCartItems($items);
+            $order->fulfill();
 
             foreach ($items->items() as $cartItem) {
                 $this->productStockManager->decrement($cartItem->product->id, $cartItem->quantity);
-
-                $order->lines()->create([
-                    'order_id' => $order->id,
-                    'product_id' => $cartItem->product->id,
-                    'quantity' => $cartItem->quantity,
-                    'price_in_cents' => $cartItem->product->priceInCents,
-                ]);
             }
 
             $this->createPaymentForOrder->handle(
                 $order->id,
                 $userId,
-                $orderTotalInCents,
+                $items->totalInCents(),
                 $paymentProvider,
                 $paymentToken
             );

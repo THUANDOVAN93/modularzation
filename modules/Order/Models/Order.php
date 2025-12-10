@@ -9,11 +9,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Order\Database\Factories\OrderFactory;
+use Modules\Order\Exceptions\OrderMissingOrderLinesException;
 use Modules\Payment\Payment;
+use Modules\Product\CartItem;
+use Modules\Product\CartItemCollection;
 
 class Order extends Model
 {
     use HasFactory;
+
+    public const PENDING = 'pending';
+    public const COMPLETED = 'completed';
 
     protected $fillable = [
         'user_id',
@@ -35,7 +41,7 @@ class Order extends Model
 
     public function lines(): HasMany
     {
-        return $this->hasMany(OrderLines::class);
+        return $this->hasMany(OrderLine::class);
     }
 
     public function payments(): HasMany
@@ -51,6 +57,47 @@ class Order extends Model
     public function url(): string
     {
         return route('orders.show', $this);
+    }
+
+    public static function startForUser($userId): self
+    {
+        return self::make([
+            'user_id' => $userId,
+            'status' => self::PENDING,
+        ]);
+    }
+
+    /**
+     * @param CartItemCollection<CartItem> $items
+     * @return void
+     */
+    public function addLinesFromCartItems(CartItemCollection $items): void
+    {
+        foreach ($items->items() as $item) {
+             $this->lines->push(OrderLine::make([
+                'product_id' => $item->product->id,
+                'price_in_cents' => $item->product->priceInCents,
+                'quantity' => $item->quantity,
+
+            ]));
+        }
+
+        $this->total_in_cents = $this->lines->sum(fn(OrderLine $line) => $line->price_in_cents);
+    }
+
+    /**
+     * @return void
+     * @throws OrderMissingOrderLinesException
+     */
+    public function fulfill(): void
+    {
+        if ($this->lines->isEmpty()) {
+            throw new OrderMissingOrderLinesException();
+        }
+
+        $this->status = self::COMPLETED;
+        $this->save();
+        $this->lines()->saveMany($this->lines);
     }
 
     protected static function newFactory(): OrderFactory

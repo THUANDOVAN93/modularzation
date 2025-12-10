@@ -8,6 +8,9 @@ use Modules\Payment\Payment;
 
 class CreatePaymentForOrder
 {
+    /**
+     * @throws PaymentFailedException
+     */
     public function handle(
         int $orderId,
         int $userId,

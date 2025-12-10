@@ -7,7 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Modules\Order\Models\Order;
-use Modules\Order\Models\OrderLines;
+use Modules\Order\Models\OrderLine;
 use Modules\Payment\PayBuddy;
 use Modules\Payment\Payment;
 use Modules\Product\Factories\ProductFactory;
@@ -47,8 +47,7 @@ class CheckoutControllerTest extends TestCase
         // Order
         $this->assertTrue($order->user->is($user));
         $this->assertEquals(60000, $order->total_in_cents);
-        $this->assertEquals('paid', $order->status);
-        $this->assertEquals('PayBuddy', $order->payment_gateway);
+        $this->assertEquals(Order::COMPLETED, $order->status);
 
         // Payment
         /** @var Payment $payment */
@@ -64,7 +63,7 @@ class CheckoutControllerTest extends TestCase
         $this->assertCount(2, $order->lines);
 
         foreach ($products as $product) {
-            /** @var OrderLines $orderLine */
+            /** @var OrderLine $orderLine */
             $orderLine = $order->lines->where('product_id', $product->id)->first();
             $this->assertEquals($product->price_in_cents, $orderLine->price_in_cents);
             $this->assertEquals(1, $orderLine->quantity);

@@ -3,12 +3,12 @@
 namespace Modules\Order\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Order\Models\OrderLines;
+use Modules\Order\Models\OrderLine;
 use Modules\Product\Factories\ProductFactory;
 
 class OrderLineFactory extends Factory
 {
-    protected $model = OrderLines::class;
+    protected $model = OrderLine::class;
 
     public function definition(): array
     {

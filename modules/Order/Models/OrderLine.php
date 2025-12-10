@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Order\Database\Factories\OrderLineFactory;
 
-class OrderLines extends Model
+class OrderLine extends Model
 {
     use HasFactory;
 

@@ -100,6 +100,11 @@ class Order extends Model
         $this->lines()->saveMany($this->lines);
     }
 
+    public function localizedTotal()
+    {
+        return $this->total_in_cents;
+    }
+
     protected static function newFactory(): OrderFactory
     {
         return OrderFactory::new();

@@ -2,8 +2,9 @@
 
 namespace Modules\Order\Actions;
 
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\DatabaseManager;
-use Modules\Order\Exceptions\PaymentFailedException;
+use Modules\Order\Events\OrderFulfilled;
 use Modules\Order\Models\Order;
 use Modules\Payment\Actions\CreatePaymentForOrder;
 use Modules\Payment\PayBuddy;
@@ -16,17 +17,17 @@ class PurchaseItems
         protected ProductStockManager $productStockManager,
         protected CreatePaymentForOrder $createPaymentForOrder,
         protected DatabaseManager $databaseManager,
+        protected Dispatcher $eventDispatcher,
     )
     {
-
     }
 
     /**
      * @throws \Throwable
      */
-    public function handle(CartItemCollection $items, PayBuddy $paymentProvider, string $paymentToken, int $userId): Order
+    public function handle(CartItemCollection $items, PayBuddy $paymentProvider, string $paymentToken, int $userId, string $userEmail): Order
     {
-        return $this->databaseManager->transaction(function () use ($items, $paymentProvider, $paymentToken, $userId) {
+        return $this->databaseManager->transaction(function () use ($items, $paymentProvider, $paymentToken, $userId, $userEmail) {
 
             $order = Order::startForUser($userId);
             $order->addLinesFromCartItems($items);
@@ -42,6 +43,16 @@ class PurchaseItems
                 $items->totalInCents(),
                 $paymentProvider,
                 $paymentToken
+            );
+
+            $this->eventDispatcher->dispatch(
+                new OrderFulfilled(
+                    orderId: $order->id,
+                    totalInCents: $items->totalInCents(),
+                    localizedTotal: $order->localizedTotal(),
+                    userId: $userId,
+                    userEmail: $userEmail,
+                )
             );
 
             return $order;

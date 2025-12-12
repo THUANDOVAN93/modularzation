@@ -4,12 +4,15 @@ namespace Modules\Order\Actions;
 
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\DatabaseManager;
+use Modules\Order\DTOs\OrderDto;
+use Modules\Order\DTOs\PendingPayment;
 use Modules\Order\Events\OrderFulfilled;
 use Modules\Order\Models\Order;
 use Modules\Payment\Actions\CreatePaymentForOrder;
 use Modules\Payment\PayBuddy;
 use Modules\Product\CartItemCollection;
 use Modules\Product\Warehouse\ProductStockManager;
+use Modules\User\UserDto;
 
 class PurchaseItems
 {
@@ -25,37 +28,30 @@ class PurchaseItems
     /**
      * @throws \Throwable
      */
-    public function handle(CartItemCollection $items, PayBuddy $paymentProvider, string $paymentToken, int $userId, string $userEmail): Order
+    public function handle(CartItemCollection $items, PendingPayment $pendingPayment, UserDto $user): OrderDto
     {
-        return $this->databaseManager->transaction(function () use ($items, $paymentProvider, $paymentToken, $userId, $userEmail) {
+        /** @var OrderDto $order */
+        $order =  $this->databaseManager->transaction(function () use ($pendingPayment, $user, $items) {
 
-            $order = Order::startForUser($userId);
+            $order = Order::startForUser($user->id);
             $order->addLinesFromCartItems($items);
             $order->fulfill();
 
-            foreach ($items->items() as $cartItem) {
-                $this->productStockManager->decrement($cartItem->product->id, $cartItem->quantity);
-            }
-
             $this->createPaymentForOrder->handle(
                 $order->id,
-                $userId,
+                $user->id,
                 $items->totalInCents(),
-                $paymentProvider,
-                $paymentToken
+                $pendingPayment->provider,
+                $pendingPayment->paymentToken
             );
 
-            $this->eventDispatcher->dispatch(
-                new OrderFulfilled(
-                    orderId: $order->id,
-                    totalInCents: $items->totalInCents(),
-                    localizedTotal: $order->localizedTotal(),
-                    userId: $userId,
-                    userEmail: $userEmail,
-                )
-            );
-
-            return $order;
+            return OrderDto::fromEloquentModel($order);
         });
+
+        $this->eventDispatcher->dispatch(
+            new OrderFulfilled($order,$user)
+        );
+
+        return $order;
     }
 }

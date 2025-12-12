@@ -2,14 +2,15 @@
 
 namespace Modules\Order\Events;
 
+use Modules\Order\DTOs\OrderDto;
+use Modules\Order\DTOs\OrderLineDto;
+use Modules\User\UserDto;
+
 class OrderFulfilled
 {
     public function __construct(
-        public int $orderId,
-        public int $totalInCents,
-        public string $localizedTotal,
-        public int $userId,
-        public string $userEmail,
+        public OrderDto $order,
+        public UserDto $user,
     )
     {
     }

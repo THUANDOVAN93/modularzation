@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Order\Events;
+namespace Modules\Order\Checkout;
 
 use Illuminate\Support\Facades\Mail;
-use Modules\Order\Mail\OrderReceived;
+use Modules\Order\Contracts\OrderFulfilled;
 
 class SendOrderConfirmationEmail
 {

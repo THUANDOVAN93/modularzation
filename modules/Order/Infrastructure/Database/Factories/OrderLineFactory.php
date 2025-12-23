@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Order\Database\Factories;
+namespace Modules\Order\Infrastructure\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Order\Models\OrderLine;
+use Modules\Order\OrderLine;
 use Modules\Product\Factories\ProductFactory;
 
 class OrderLineFactory extends Factory

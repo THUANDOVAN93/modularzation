@@ -1,9 +1,7 @@
 <?php
 
-namespace Modules\Order\Events;
+namespace Modules\Order\Contracts;
 
-use Modules\Order\DTOs\OrderDto;
-use Modules\Order\DTOs\OrderLineDto;
 use Modules\User\UserDto;
 
 class OrderFulfilled

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Order\Mail;
+namespace Modules\Order\Checkout;
 
 use Illuminate\Mail\Mailable;
 

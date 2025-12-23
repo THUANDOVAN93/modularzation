@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Order\Models;
+namespace Modules\Order;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Order\Database\Factories\OrderLineFactory;
+use Modules\Order\Infrastructure\Database\Factories\OrderLineFactory;
 
 class OrderLine extends Model
 {

@@ -5,7 +5,7 @@ namespace Modules\Payment;
 use Illuminate\Support\Number;
 use Illuminate\Support\Str;
 
-class PayBuddy
+class PayBuddySdk
 {
 
     public function charge(string $token, int $amountInCents, string $statementDescription): array
@@ -16,6 +16,7 @@ class PayBuddy
 
         return [
             'id' => (string) Str::uuid(),
+            'amount_in_cents' => $amountInCents,
             'localized_amount' => $localizedAmount,
             'statement_description' => $statementDescription,
             'created_at' => now()->toDateTimeString(),
@@ -32,7 +33,7 @@ class PayBuddy
         }
     }
 
-    public static function make(): PayBuddy
+    public static function make(): PayBuddySdk
     {
         return new self();
     }

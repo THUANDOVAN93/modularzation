@@ -9,7 +9,7 @@ use Modules\Order\DTOs\PendingPayment;
 use Modules\Order\Events\OrderFulfilled;
 use Modules\Order\Models\Order;
 use Modules\Payment\Actions\CreatePaymentForOrder;
-use Modules\Payment\PayBuddy;
+use Modules\Payment\PayBuddySdk;
 use Modules\Product\CartItemCollection;
 use Modules\Product\Warehouse\ProductStockManager;
 use Modules\User\UserDto;
@@ -49,7 +49,7 @@ class PurchaseItems
         });
 
         $this->eventDispatcher->dispatch(
-            new OrderFulfilled($order,$user)
+                new OrderFulfilled($order,$user)
         );
 
         return $order;

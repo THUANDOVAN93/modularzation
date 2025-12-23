@@ -2,6 +2,7 @@
 
 namespace Modules\Order\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class OrderServiceProvider extends ServiceProvider
@@ -13,5 +14,9 @@ class OrderServiceProvider extends ServiceProvider
 
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
+
+        $this->loadViewsFrom(__DIR__ . '/../Views', 'order');
+        Blade::anonymousComponentPath(__DIR__ . '/../Views/components', 'order');
+        Blade::componentNamespace('Modules\\Order\\ViewComponents', 'order');
     }
 }

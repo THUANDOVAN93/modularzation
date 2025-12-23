@@ -1,0 +1,3 @@
+<div>
+    Alert: {{ $message }}
+</div>

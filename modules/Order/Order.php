@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Order\Infrastructure\Database\Factories\OrderFactory;
 use Modules\Payment\Payment;
-use Modules\Product\CartItem;
-use Modules\Product\CartItemCollection;
+use Modules\Product\Collections\CartItemCollection;
+use Modules\Product\DTOs\CartItem;
 
 class Order extends Model
 {

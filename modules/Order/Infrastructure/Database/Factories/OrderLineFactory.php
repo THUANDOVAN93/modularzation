@@ -4,7 +4,7 @@ namespace Modules\Order\Infrastructure\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Order\OrderLine;
-use Modules\Product\Factories\ProductFactory;
+use Modules\Product\database\factories\ProductFactory;
 
 class OrderLineFactory extends Factory
 {

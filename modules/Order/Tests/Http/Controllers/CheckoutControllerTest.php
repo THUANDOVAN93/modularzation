@@ -11,7 +11,7 @@ use Modules\Order\Order;
 use Modules\Order\OrderLine;
 use Modules\Payment\PayBuddySdk;
 use Modules\Payment\Payment;
-use Modules\Product\Factories\ProductFactory;
+use Modules\Product\database\factories\ProductFactory;
 use Tests\TestCase;
 
 class CheckoutControllerTest extends TestCase

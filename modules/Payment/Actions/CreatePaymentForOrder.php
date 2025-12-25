@@ -7,7 +7,7 @@ use Modules\Payment\Payment;
 use Modules\Payment\PaymentDetails;
 use Modules\Payment\PaymentGateway;
 
-class CreatePaymentForOrder
+class CreatePaymentForOrder implements CreatePaymentForOrderInterface
 {
     /**
      * @throws PaymentFailedException

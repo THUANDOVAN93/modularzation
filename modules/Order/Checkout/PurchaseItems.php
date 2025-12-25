@@ -9,6 +9,7 @@ use Modules\Order\Contracts\OrderFulfilled;
 use Modules\Order\Contracts\PendingPayment;
 use Modules\Order\Order;
 use Modules\Payment\Actions\CreatePaymentForOrder;
+use Modules\Payment\Actions\CreatePaymentForOrderInterface;
 use Modules\Product\Collections\CartItemCollection;
 use Modules\Product\Warehouse\ProductStockManager;
 use Modules\User\UserDto;
@@ -17,7 +18,7 @@ class PurchaseItems
 {
     public function __construct(
         protected ProductStockManager $productStockManager,
-        protected CreatePaymentForOrder $createPaymentForOrder,
+        protected CreatePaymentForOrderInterface $createPaymentForOrder,
         protected DatabaseManager $databaseManager,
         protected Dispatcher $eventDispatcher,
     )
@@ -48,7 +49,11 @@ class PurchaseItems
         });
 
         $this->eventDispatcher->dispatch(
-                new OrderFulfilled($order,$user)
+            new OrderStarted($order, $user, $pendingPayment)
+        );
+
+        $this->eventDispatcher->dispatch(
+                new OrderFulfilled($order, $user)
         );
 
         return $order;

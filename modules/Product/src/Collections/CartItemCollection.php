@@ -30,6 +30,13 @@ class CartItemCollection
         return new self($cartItems);
     }
 
+    public static function fromProduct(ProductDto $product, int $quantity = 1): CartItemCollection
+    {
+        return new self(collect([
+            new CartItem($product, $quantity)
+        ]));
+    }
+
     public function totalInCents()
     {
         return $this->items->sum(fn(CartItem $cartItem) => $cartItem->quantity * $cartItem->product->priceInCents);

@@ -24,6 +24,11 @@ class OrderLine extends Model
         'quantity' => 'integer',
     ];
 
+    public function total(): int
+    {
+        return $this->price_in_cents * $this->quantity;
+    }
+
     protected static function newFactory(): OrderLineFactory
     {
         return OrderLineFactory::new();

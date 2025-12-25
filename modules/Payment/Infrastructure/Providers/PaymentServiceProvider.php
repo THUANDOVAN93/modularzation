@@ -3,6 +3,8 @@
 namespace Modules\Payment\Infrastructure\Providers;
 
 use Carbon\Laravel\ServiceProvider;
+use Modules\Payment\Actions\CreatePaymentForOrder;
+use Modules\Payment\Actions\CreatePaymentForOrderInterface;
 use Modules\Payment\PayBuddyGateway;
 use Modules\Payment\PayBuddySdk;
 use Modules\Payment\PaymentGateway;
@@ -16,5 +18,6 @@ class PaymentServiceProvider extends ServiceProvider
 
         $this->loadRoutesFrom(__DIR__ . '/../../routes.php');
         $this->app->bind(PaymentGateway::class, fn() => new PayBuddyGateway(new PayBuddySdk()));
+        $this->app->bind(CreatePaymentForOrderInterface::class, CreatePaymentForOrder::class);
     }
 }
